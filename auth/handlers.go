@@ -53,6 +53,6 @@ func ProtectedHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Invalid token")
 		return
 	}
-	fmt.Fprint(w, "Welcome to the the protected area")
+	fmt.Fprint(w, "Hello Mr. Kanaya")
 
 }

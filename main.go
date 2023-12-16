@@ -14,7 +14,7 @@ func main() {
 		fmt.Fprint(w, "Hello world")
 	})
 	router.HandleFunc("/login", auth.LoginHandler).Methods("POST")
-	router.HandleFunc("/protected", auth.ProtectedHandler).Methods("GET")
+	router.HandleFunc("/api/v1/whoiam", auth.ProtectedHandler).Methods("GET")
 
 	fmt.Println("Starting the server")
 	err := http.ListenAndServe(":4000", router)
