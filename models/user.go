@@ -6,7 +6,8 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"uniqueIndex;not null"`
-	Password string `gorm:"not null"`
-	isActive bool   `gorm:"default:false;"`
+	Username    string `gorm:"uniqueIndex;not null"`
+	Password    string `gorm:"not null"`
+	IsActivated bool   `gorm:"default:false"`
+	Roles       string `gorm:"not null;default:'user'"`
 }

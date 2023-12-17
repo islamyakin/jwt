@@ -40,8 +40,8 @@ func init() {
 	fmt.Println("Successfully connected!")
 }
 
-func CreateUser(username, password string) error {
-	user := models.User{Username: username, Password: password}
+func CreateUser(username, password, roles string) error {
+	user := models.User{Username: username, Password: password, Roles: roles}
 	result := db.Create(&user)
 	if result.Error != nil {
 		return result.Error
@@ -71,15 +71,24 @@ func CreateToken(username string) (string, error) {
 	return tokenString, nil
 }
 
-func verifyToken(tokenString string) error {
+func getUsernameFromToken(tokenString string) (string, error) {
+	// Parse the token
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
 	if err != nil {
-		return err
+		return "", err
 	}
-	if !token.Valid {
-		return fmt.Errorf("invalid token")
+
+	// Check if the token is valid
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// Extract the username from the claims
+		username, ok := claims["username"].(string)
+		if !ok {
+			return "", fmt.Errorf("username not found in token claims")
+		}
+		return username, nil
+	} else {
+		return "", fmt.Errorf("invalid token")
 	}
-	return nil
 }

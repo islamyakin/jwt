@@ -35,7 +35,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create the user in the database
-	err = CreateUser(u.Username, u.Password)
+	err = CreateUser(u.Username, u.Password, u.Roles)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = fmt.Fprint(w, "Error creating user")
