@@ -3,30 +3,31 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/islamyakin/jwt/models"
 	"net/http"
 )
 
-type User struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
+//type User struct {
+//	Username string `json:"username"`
+//	Password string `json:"password"`
+//}
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Printf("The request body is %v\n", r.Body)
 
-	var u User
+	var u models.User
 	err := json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {
 		return
 	}
 	fmt.Printf("The user request value %v", u)
 
-	if u.Username == "kanaya" && u.Password == "rainbowdrinker" {
+	if AuthenticateUser(u.Username, u.Password) {
 		tokenString, err := CreateToken(u.Username)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			_ = fmt.Errorf("no username found")
+			_, err = fmt.Fprint(w, "Error creating Token")
 		}
 		w.WriteHeader(http.StatusOK)
 		_, err = fmt.Fprint(w, tokenString)

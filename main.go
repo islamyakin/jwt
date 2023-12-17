@@ -17,6 +17,7 @@ func main() {
 		}
 	})
 	router.HandleFunc("/login", auth.LoginHandler).Methods("POST")
+	router.HandleFunc("/create-user", auth.CreateUserHandler).Methods("POST")
 	router.HandleFunc("/api/v1/whoiam", auth.ProtectedHandler).Methods("GET")
 
 	fmt.Println("Starting the server")
