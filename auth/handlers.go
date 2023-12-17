@@ -26,14 +26,20 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		tokenString, err := CreateToken(u.Username)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Errorf("No username found")
+			_ = fmt.Errorf("no username found")
 		}
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, tokenString)
+		_, err = fmt.Fprint(w, tokenString)
+		if err != nil {
+			return
+		}
 		return
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprint(w, "Invalid credentials")
+		_, err = fmt.Fprint(w, "Invalid credentials")
+		if err != nil {
+			return
+		}
 	}
 }
 
@@ -42,7 +48,10 @@ func ProtectedHandler(w http.ResponseWriter, r *http.Request) {
 	tokenString := r.Header.Get("Authorization")
 	if tokenString == "" {
 		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprint(w, "Missing authorization header")
+		_, err := fmt.Fprint(w, "Missing authorization header")
+		if err != nil {
+			return
+		}
 		return
 	}
 	tokenString = tokenString[len("Bearer "):]
@@ -50,9 +59,15 @@ func ProtectedHandler(w http.ResponseWriter, r *http.Request) {
 	err := verifyToken(tokenString)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprint(w, "Invalid token")
+		_, err := fmt.Fprint(w, "Invalid token")
+		if err != nil {
+			return
+		}
 		return
 	}
-	fmt.Fprint(w, "Hello Mr. Kanaya")
+	_, err = fmt.Fprint(w, "Hello Mr. Kanaya")
+	if err != nil {
+		return
+	}
 
 }

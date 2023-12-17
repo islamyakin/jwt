@@ -11,7 +11,10 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello world")
+		_, err := fmt.Fprint(w, "Hello world")
+		if err != nil {
+			return
+		}
 	})
 	router.HandleFunc("/login", auth.LoginHandler).Methods("POST")
 	router.HandleFunc("/api/v1/whoiam", auth.ProtectedHandler).Methods("GET")
